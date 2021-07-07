@@ -3,6 +3,7 @@ package ims.owen.thejavatest;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -11,12 +12,16 @@ import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
-@ExtendWith(FindSlowTestExtension.class)
+//@ExtendWith(FindSlowTestExtension.class) // 어노테이션으로 해버리면 커스텀을 할 수 가 없다!(각 테스트마다 THRESHOLD값을 다르게 하고 싶을 떄)
+                                                // 그래서 @RegisterExtension를 사용해서 코딩방식으로 사용한다.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class StudyTest {
     int value = 1;
 
-    @Test
+    @RegisterExtension
+    static FindSlowTestExtension findSlowTestExtension = new FindSlowTestExtension(1000L);
+
+    @FastTest
     @Order(2)
     @DisplayName("스터디 만들기")
     @EnabledIfEnvironmentVariable(named = "TEST_ENV", matches = "LOCAL")
