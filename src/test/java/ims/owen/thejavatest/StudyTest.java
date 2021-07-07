@@ -1,21 +1,20 @@
 package ims.owen.thejavatest;
 
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.condition.*;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
-import org.junit.jupiter.params.converter.ArgumentConversionException;
-import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class StudyTest {
-    @SlowTest
+    @Test
+    @Order(2)
     @DisplayName("스터디 만들기")
     @EnabledIfEnvironmentVariable(named = "TEST_ENV", matches = "LOCAL")
     void create() {
@@ -39,7 +38,8 @@ class StudyTest {
 
     }
 
-    @SlowTest
+    @Test
+    @Order(1)
     @DisplayName("조건에 따라 테스트 실행하기")
     void condition() {
         String test_env = System.getenv("TEST_ENV");
@@ -47,7 +47,7 @@ class StudyTest {
         assumeTrue("LOCAL".equalsIgnoreCase(test_env));
     }
 
-    @SlowTest
+    @Test
     @DisplayName("스터디 만들기 다시")
     @EnabledIfEnvironmentVariable(named = "TEST_ENV", matches = "Owen")
     void create1() {
