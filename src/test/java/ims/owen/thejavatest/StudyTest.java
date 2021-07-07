@@ -3,6 +3,10 @@ package ims.owen.thejavatest;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.*;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
+import org.junit.jupiter.params.converter.ArgumentConversionException;
+import org.junit.jupiter.params.converter.SimpleArgumentConverter;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.Duration;
@@ -57,11 +61,20 @@ class StudyTest {
         System.out.println("test" + repetitionInfo.getCurrentRepetition() + "/" + repetitionInfo.getTotalRepetitions());
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"날씨가", "많이", "더워지고", "있네요."})
-    void parameterizedTest(String message) {
-        System.out.println(message);
+    @ParameterizedTest(name = "{index} {displayName} message = {0}")
+//    @ValueSource(strings = {"날씨가", "많이", "더워지고", "있네요."})
+    @CsvSource({"10, '자바 스터디'", "20, 스프링"})
+    void parameterizedTest(ArgumentsAccessor argumentsAccessor) {
+        Study study = new Study(argumentsAccessor.getInteger(0), argumentsAccessor.getString(1));
+        System.out.println(study);
     }
+
+//    static class StudConverter extends SimpleArgumentConverter {
+//        @Override
+//        protected Object convert(Object source, Class<?> targetType) throws ArgumentConversionException {
+//            return new Study(Integer.parseInt(source.toString()));
+//        }
+//    }
 
 
     @BeforeAll
