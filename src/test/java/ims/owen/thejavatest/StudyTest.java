@@ -3,9 +3,12 @@ package ims.owen.thejavatest;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
+import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
+import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.Duration;
@@ -15,6 +18,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 //@ExtendWith(FindSlowTestExtension.class) // 어노테이션으로 해버리면 커스텀을 할 수 가 없다!(각 테스트마다 THRESHOLD값을 다르게 하고 싶을 떄)
                                                 // 그래서 @RegisterExtension를 사용해서 코딩방식으로 사용한다.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@DisplayNameGeneration(value = DisplayNameGenerator.ReplaceUnderscores.class)
 class StudyTest {
     int value = 1;
 
@@ -81,8 +85,14 @@ class StudyTest {
         Study study = new Study(argumentsAccessor.getInteger(0), argumentsAccessor.getString(1));
         System.out.println(study);
     }
+    static class StudyAggregator implements ArgumentsAggregator {
+        @Override
+        public Object aggregateArguments(ArgumentsAccessor argumentsAccessor, ParameterContext parameterContext) throws ArgumentsAggregationException {
+            return new Study(argumentsAccessor.getInteger(0), argumentsAccessor.getString(1));
+        }
+    }
 
-//    static class StudConverter extends SimpleArgumentConverter {
+//    static class StudyConverter extends SimpleArgumentConverter {
 //        @Override
 //        protected Object convert(Object source, Class<?> targetType) throws ArgumentConversionException {
 //            return new Study(Integer.parseInt(source.toString()));
