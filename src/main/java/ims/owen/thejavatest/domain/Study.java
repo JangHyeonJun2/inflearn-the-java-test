@@ -2,6 +2,8 @@ package ims.owen.thejavatest.domain;
 
 import ims.owen.thejavatest.study.StudyStatus;
 
+import javax.persistence.ManyToOne;
+
 public class Study {
     private StudyStatus status = StudyStatus.DRAFT;
     private int limit;
@@ -11,6 +13,9 @@ public class Study {
         this.limit = limit;
         this.name = name;
     }
+
+    @ManyToOne
+    private Member owner;
 
     public Study(int limit) {
         if (limit < 0) {
@@ -35,7 +40,11 @@ public class Study {
         return limit;
     }
 
-    public void setOwner(Member member) {
+    public Member getOwner() {
+        return owner;
+    }
 
+    public void setOwner(Member member) {
+        this.owner = member;
     }
 }
