@@ -7,13 +7,14 @@ import ims.owen.thejavatest.member.MemberService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class StudyServiceTest {
@@ -74,5 +75,28 @@ class StudyServiceTest {
 
         studyService.createNewStudy(1L, study);
         org.junit.jupiter.api.Assertions.assertEquals(member, study.getOwner());
+    }
+
+    @Test
+    void checkMock() throws MemberNotFoundException {
+        StudyService studyService = new StudyService(memberService, studyRepository);
+        Study study = new Study(12, "테스트");
+        Member member = new Member();
+        member.setId(1L);
+        member.setEmail("Hyeon@naver.com");
+
+        when(memberService.findById(member.getId())).thenReturn(Optional.of(member));
+        when(studyRepository.save(study)).thenReturn(study);
+
+        studyService.createNewStudy(1L, study);
+        verify(memberService, times(1)).notify(study);
+//        verifyNoMoreInteractions(memberService);
+        verify(memberService, times(1)).notify(Optional.of(member));
+        verify(memberService, never()).validate();
+
+        InOrder inOrder = inOrder(memberService);
+        inOrder.verify(memberService).notify(study);
+        inOrder.verify(memberService).notify(Optional.of(member));
+
     }
 }
