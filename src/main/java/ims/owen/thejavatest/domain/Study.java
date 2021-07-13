@@ -1,4 +1,6 @@
-package ims.owen.thejavatest;
+package ims.owen.thejavatest.domain;
+
+import ims.owen.thejavatest.study.StudyStatus;
 
 public class Study {
     private StudyStatus status = StudyStatus.DRAFT;
@@ -31,5 +33,9 @@ public class Study {
 
     public int getLimit() {
         return limit;
+    }
+
+    public void setOwner(Member member) {
+
     }
 }

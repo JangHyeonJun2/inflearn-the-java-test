@@ -1,5 +1,7 @@
 package ims.owen.thejavatest;
 
+import ims.owen.thejavatest.domain.Study;
+import ims.owen.thejavatest.study.StudyStatus;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.extension.ExtendWith;
