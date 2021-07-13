@@ -5,6 +5,7 @@ import ims.owen.thejavatest.domain.Study;
 import ims.owen.thejavatest.member.MemberNotFoundException;
 import ims.owen.thejavatest.member.MemberService;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
@@ -103,6 +104,29 @@ class StudyServiceTest {
         InOrder inOrder = inOrder(memberService);
         inOrder.verify(memberService).notify(study);
         inOrder.verify(memberService).notify(Optional.of(member));
+
+    }
+    @Test
+    @DisplayName("Mockito 연습문제 : 다른 사용자가 볼 수 있도록 스터디를 공개한다.")
+    void mockitoTestQuestion() {
+        //given
+        StudyService studyService = new StudyService(memberService, studyRepository);
+        Study study = new Study(10, "더 자바, 테스트");
+        //TODO studyRepository Mock 객체의 save 메소드를 호출 시 study 를 리턴하도록 만들기
+        when(studyRepository.save(study)).thenReturn(study);
+
+        //when
+        studyService.openStudy(study);
+
+        //then
+        //TODO study의 status가 OPEND로 변경됐는지 확인
+        Assertions.assertThat(study.getStatus()).isEqualTo(StudyStatus.OPEND);
+        //TODO study의 opendDataTime이 null이 아닌지 확인
+        Assertions.assertThat(study.getOpendDataTime()).isNotNull();
+        System.out.println("studyGetOpendDataTime = " + study.getOpendDataTime());
+        //TODO memberService의 notify(study)가 호출 됐는지 확인
+        verify(memberService,times(1)).notify(study);
+
 
     }
 }
