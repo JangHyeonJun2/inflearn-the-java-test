@@ -14,6 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -85,15 +87,19 @@ class StudyServiceTest {
         member.setId(1L);
         member.setEmail("Hyeon@naver.com");
 
-        when(memberService.findById(member.getId())).thenReturn(Optional.of(member));
-        when(studyRepository.save(study)).thenReturn(study);
+//        when(memberService.findById(member.getId())).thenReturn(Optional.of(member));
+//        when(studyRepository.save(study)).thenReturn(study);
+        //BDD 스타일
+        given(memberService.findById(1L)).willReturn(Optional.of(member));
+        given(studyRepository.save(study)).willReturn(study);
 
         studyService.createNewStudy(1L, study);
-        verify(memberService, times(1)).notify(study);
+//        verify(memberService, times(1)).notify(study);
+        then(memberService).should(times(1)).notify(study);
 //        verifyNoMoreInteractions(memberService);
-        verify(memberService, times(1)).notify(Optional.of(member));
-        verify(memberService, never()).validate();
-
+//        verify(memberService, times(1)).notify(Optional.of(member));
+        then(memberService).should(times(1)).notify(Optional.of(member));
+        verify(memberService, never()).validate(); // -> 이거는 BDD 스타일로 뭔지 찾아보기
         InOrder inOrder = inOrder(memberService);
         inOrder.verify(memberService).notify(study);
         inOrder.verify(memberService).notify(Optional.of(member));
